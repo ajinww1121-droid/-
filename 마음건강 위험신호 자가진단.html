@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마음건강 위험신호 자가진단</title>
+<link rel="icon" href="향일고등학교.png" type="image/png">
+<style>
+  * { box-sizing: border-box; }
+  
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+    background: #f5f7fa;
+    margin: 0; 
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .container { 
+    max-width: 600px; 
+    margin: auto; 
+    background: #fff; 
+    padding: 40px 30px; 
+    border-radius: 16px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  
+  h1 { 
+    text-align: center; 
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.8em;
+    font-weight: 700;
+  }
+  
+  .subtitle {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 0.95em;
+    margin-bottom: 30px;
+  }
+  
+  .user-id-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #e8f4f8;
+    border-radius: 12px;
+    border-left: 4px solid #3498db;
+  }
+  
+  .user-id-section label {
+    font-weight: 600;
+    color: #2c3e50;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .user-id-section input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #bdc3c7;
+    border-radius: 8px;
+    font-size: 1em;
+  }
+  
+  .user-id-section .note {
+    font-size: 0.85em;
+    color: #7f8c8d;
+    margin-top: 8px;
+    display: block;
+  }
+  
+  .input-group {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fafbfc;
+    border-radius: 12px;
+    border: 1px solid #e1e4e8;
+  }
+  
+  label { 
+    font-weight: 600; 
+    display: block; 
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 1.05em;
+  }
+  
+  .note { 
+    font-weight: normal; 
+    font-size: 0.85em; 
+    color: #6c757d;
+    display: block;
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+  
+  input[type=number] { 
+    width: 100%; 
+    padding: 12px 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  
+  input[type=number]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+  
+  input[type=range] { 
+    width: 100%; 
+    margin: 15px 0 8px 0;
+    -webkit-appearance: none; 
+    height: 8px; 
+    border-radius: 4px; 
+    background: #e1e4e8;
+    outline: none;
+  }
+  
+  input[type=range]::-webkit-slider-thumb { 
+    -webkit-appearance: none; 
+    appearance: none; 
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%; 
+    background: #3498db;
+    cursor: pointer; 
+    box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4);
+    transition: all 0.2s ease;
+  }
+  
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 3px 10px rgba(52, 152, 219, 0.6);
+  }
+  
+  input[type=range]::-moz-range-thumb { 
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%; 
+    background: #3498db;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4);
+    transition: all 0.2s ease;
+  }
+  
+  input[type=range]::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 3px 10px rgba(52, 152, 219, 0.6);
+  }
+  
+  .value-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .current-value {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #3498db;
+    background: #e8f4f8;
+    padding: 5px 15px;
+    border-radius: 20px;
+  }
+  
+  .value-label {
+    font-size: 0.9em;
+    color: #6c757d;
+  }
+  
+  .ticks { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.75em; 
+    color: #adb5bd;
+    margin-top: 5px;
+    padding: 0 2px;
+  }
+  
+  button { 
+    width: 100%; 
+    padding: 16px; 
+    margin-top: 30px; 
+    background: #3498db;
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover { 
+    background: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  .result-container {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    text-align: center;
+    display: none;
+    border: 2px solid #e1e4e8;
+  }
+  
+  .result-container.show {
+    display: block;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .result { 
+    font-size: 1.5em; 
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+  
+  .result-score {
+    font-size: 2em;
+    color: #3498db;
+  }
+  
+  .category { 
+    margin-top: 15px; 
+    font-size: 1.3em; 
+    font-weight: 700;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    display: inline-block;
+  }
+  
+  .comparison-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+  }
+  
+  .comparison-box h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 1em;
+  }
+  
+  .comparison-box p {
+    margin: 5px 0;
+    color: #495057;
+    font-size: 0.95em;
+  }
+  
+  .comparison-increase {
+    color: #e74c3c;
+    font-weight: 700;
+  }
+  
+  .comparison-decrease {
+    color: #27ae60;
+    font-weight: 700;
+  }
+  
+  .comparison-same {
+    color: #7f8c8d;
+    font-weight: 700;
+  }
+  
+  .advice-message {
+    margin-top: 15px;
+    padding: 15px 20px;
+    background: #fff;
+    border-radius: 8px;
+    color: #2c3e50;
+    font-size: 0.95em;
+    line-height: 1.6;
+    border-left: 4px solid;
+  }
+  
+  .general-warning {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+    font-size: 0.9em;
+    color: #856404;
+    line-height: 1.6;
+  }
+  
+  .emergency-help {
+    margin-top: 20px;
+    padding: 25px;
+    background: #ffe0e0;
+    border-radius: 12px;
+    border: 2px solid #e74c3c;
+    color: #721c24;
+    text-align: center;
+    display: none;
+  }
+  
+  .emergency-help.show {
+    display: block;
+  }
+  
+  .emergency-help h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.3em;
+    color: #e74c3c;
+  }
+  
+  .emergency-help p {
+    margin: 10px 0;
+    font-size: 1em;
+    line-height: 1.6;
+  }
+  
+  .help-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 15px 30px;
+    background: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+  }
+  
+  .help-button:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  }
+  
+  .disclaimer { 
+    font-size: 0.85em; 
+    color: #6c757d;
+    margin-top: 25px; 
+    text-align: center;
+    line-height: 1.6;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+  }
+  
+  .icon {
+    display: inline-block;
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🧠 마음건강 위험신호 자가진단</h1>
+  <p class="subtitle">최근 1주일간의 상태를 입력해주세요</p>
+ 
+  <div class="user-id-section">
+    <label for="userId"><span class="icon">🔑</span>익명 닉네임 (선택)</label>
+    <input type="text" id="userId" placeholder="예: student123 또는 teacher01">
+    <span class="note">이전 결과와 비교하교 싶다면 같은 닉네임을 입력하세요. 개인정보는 저장되지 않습니다.</span>
+  </div>
+
+  <div class="input-group">
+    <label for="age"><span class="icon">👤</span>나이</label>
+    <input type="number" id="age" value="20" min="10" max="70">
+  </div>
+
+  <div class="input-group">
+    <label for="support">
+      <span class="icon">🤝</span>사회적 지지 수준
+      <span class="note">개인에게 어려움이 있을 때 가족, 친구, 동료 등 사회적 관계망을 통해 받는 정서적, 물질적, 정보적 측면의 긍정적인 도움 수준 (10에 가까울수록 긍정적)</span>
+    </label>
+    <div class="value-display">
+      <span class="value-label">낮음</span>
+      <span class="current-value" id="supportVal">5</span>
+      <span class="value-label">높음</span>
+    </div>
+    <input type="range" id="support" min="1" max="10" value="5" step="1">
+    <div class="ticks">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="sleep"><span class="icon">😴</span>수면시간</label>
+    <div class="value-display">
+      <span class="value-label">부족</span>
+      <span class="current-value" id="sleepVal">7</span>
+      <span class="value-label">충분</span>
+    </div>
+    <input type="range" id="sleep" min="0" max="12" value="7" step="0.5">
+    <div class="ticks">
+      <span>0h</span><span>2h</span><span>4h</span><span>6h</span><span>8h</span><span>10h</span><span>12h</span>
+    </div>
+    <div class="value-label" id="sleepText" style="text-align: center; margin-top: 8px; font-size: 1em; color: #495057;">7시간 0분</div>
+  </div>
+
+  <div class="input-group">
+    <label for="stress">
+      <span class="icon">😰</span>스트레스 지수
+      <span class="note">10에 가까울수록 매우 높은 스트레스 상태</span>
+    </label>
+    <div class="value-display">
+      <span class="value-label">낮음</span>
+      <span class="current-value" id="stressVal">5</span>
+      <span class="value-label">높음</span>
+    </div>
+    <input type="range" id="stress" min="1" max="10" value="5" step="1">
+    <div class="ticks">
+      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+    </div>
+  </div>
+
+  <button onclick="calculateR()">📊 결과 계산하기</button>
+
+  <div class="result-container" id="resultContainer">
+    <div class="result">
+      위험지수: <span class="result-score" id="resultScore">0</span>
+    </div>
+    <div class="category" id="category"></div>
+    
+    <div class="comparison-box" id="comparisonBox" style="display: none;">
+      <h4>📈 이전 결과와 비교</h4>
+      <p id="comparisonText"></p>
+    </div>
+    
+    <div class="advice-message" id="adviceMessage"></div>
+    
+    <div class="general-warning" id="generalWarning" style="display: none;">
+      ⚠️ 점수와 관계없이 극단적인 생각이나 심각한 스트레스 및 불안이 지속되는 경우, 즉시 전문가의 도움을 받는 것을 권장합니다.
+    </div>
+  </div>
+
+  <div class="emergency-help" id="emergencyHelp">
+    <h3>🆘 즉시 도움이 필요합니다</h3>
+    <p>혼자 해결하려고 하지 않아도 괜찮습니다.<br>당신을 도울 수 있는 전문가들이 곁에 있습니다.</p>
+    <a href="https://www.129.go.kr/109" target="_blank" class="help-button">
+      🌐 보건복지상담센터 바로가기
+    </a>
+    <p style="margin-top: 15px; font-size: 0.9em;">전화 상담: 국번없이 <strong>109</strong></p>
+  </div>
+
+  <p class="disclaimer">
+    ⚠️ 본 프로그램의 진단 결과는 참고용이며, 절대적 진단 결과를 보장하지 않습니다. 더 자세하고 정확한 진단은 전문 의료기관을 통한 상담을 권장합니다.
+  </p>
+</div>
+
+<script>
+  // Enter 키 이벤트 리스너 추가
+  document.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      calculateR();
+    }
+  });
+
+  const supportSlider = document.getElementById('support');
+  const supportVal = document.getElementById('supportVal');
+  supportSlider.oninput = () => supportVal.textContent = supportSlider.value;
+
+  const sleepSlider = document.getElementById('sleep');
+  const sleepVal = document.getElementById('sleepVal');
+  const sleepText = document.getElementById('sleepText');
+  sleepSlider.oninput = () => {
+    sleepVal.textContent = sleepSlider.value;
+    const hours = Math.floor(sleepSlider.value);
+    const minutes = (sleepSlider.value - hours) * 60;
+    sleepText.textContent = `${hours}시간 ${minutes===0?0:30}분`;
+  };
+
+  const stressSlider = document.getElementById('stress');
+  const stressVal = document.getElementById('stressVal');
+  stressSlider.oninput = () => stressVal.textContent = stressSlider.value;
+
+  // 로컬 스토리지에서 이전 데이터 불러오기
+  function getPreviousData(userId) {
+    if (!userId) return null;
+    const saved = localStorage.getItem('mentalHealth_' + userId);
+    return saved ? JSON.parse(saved) : null;
+  }
+
+  // 로컬 스토리지에 데이터 저장
+  function saveData(userId, score, date) {
+    if (!userId) return;
+    const data = { score: score, date: date };
+    localStorage.setItem('mentalHealth_' + userId, JSON.stringify(data));
+  }
+
+  function calculateR() {
+    // 먼저 긴급 도움 섹션 숨기기
+    document.getElementById('emergencyHelp').classList.remove('show');
+    document.getElementById('generalWarning').style.display = 'none';
+    document.getElementById('comparisonBox').style.display = 'none';
+    
+    const A = Number(document.getElementById('age').value);
+    const G = Number(document.getElementById('support').value);
+    const H = Number(document.getElementById('sleep').value);
+    const S = Number(document.getElementById('stress').value);
+    const userId = document.getElementById('userId').value.trim();
+
+    // 가중치
+    const wStress = 0.34;
+    const wSleep = 0.27;
+    const wSupport = 0.34;
+    const wAge = 0.05;
+
+    // 스트레스
+    const S_norm = (S-1)/9;
+
+    // 수면 위험 (6~8 시간 구간 안전)
+    const a1 = (6-H)/6;
+    const b1 = (H-8)/4;
+    const m1 = (a1+b1+Math.abs(a1-b1))/2;
+    const H_risk = (m1 + Math.abs(m1))/2;
+
+    // 사회적 지지 반전
+    const G_norm = (10-G)/9;
+
+    // 나이 위험: 10~25, 45~50 증가, 26~44 제외
+    const a2 = (30-A)/20;
+    const b2 = (A-45)/5;
+    const m2 = (a2+b2+Math.abs(a2-b2))/2;
+    let A_risk = (m2+Math.abs(m2))/2;
+    A_risk = Math.min(Math.max(A_risk,0),1);
+
+    // 최종 R
+    let R = 100*(wStress*S_norm + wSleep*H_risk + wSupport*G_norm + wAge*A_risk);
+    R = Math.min(Math.max(R,0),100);
+
+    // 이전 데이터와 비교
+    if (userId) {
+      const previousData = getPreviousData(userId);
+      if (previousData) {
+        const diff = R - previousData.score;
+        const diffAbs = Math.abs(diff);
+        const comparisonBox = document.getElementById('comparisonBox');
+        const comparisonText = document.getElementById('comparisonText');
+        
+        comparisonBox.style.display = 'block';
+        
+        if (diffAbs < 0.5) {
+          comparisonText.innerHTML = `이전과 <span class="comparison-same">비슷한 수준</span>입니다.`;
+        } else if (diff > 0) {
+          comparisonText.innerHTML = `이전보다 위험 요인이 <span class="comparison-increase">${diffAbs.toFixed(1)}점 증가</span>했습니다.`;
+        } else {
+          comparisonText.innerHTML = `이전보다 <span class="comparison-decrease">${diffAbs.toFixed(1)}점 개선</span>되었습니다! 👍`;
+        }
+      }
+      
+      // 현재 데이터 저장
+      saveData(userId, R, new Date().toISOString());
+    }
+
+    document.getElementById('resultScore').textContent = R.toFixed(1);
+
+    let catText = '';
+    let color = '';
+    let emoji = '';
+    let adviceText = '';
+    let adviceColor = '';
+    let showGeneralWarning = false;
+    
+    if(R <= 40){ 
+      catText='정상(Normal)'; 
+      color='#3498db'; 
+      emoji='✅';
+      adviceText = '지금처럼 건강을 유지하려면 규칙적인 수면과 취미 활동이 도움이 됩니다.';
+      adviceColor = '#3498db';
+      showGeneralWarning = true;
+    }
+    else if(R <= 55){ 
+      catText='주의(Caution)'; 
+      color='#2ecc71'; 
+      emoji='⚠️';
+      adviceText = '최근 감정 변화를 무시하지 말고 회복에 신경써보세요. 하루 10분 산책도 효과적입니다.';
+      adviceColor = '#2ecc71';
+      showGeneralWarning = true;
+    }
+    else if(R <= 75){ 
+      catText='위험(Risk)'; 
+      color='#e67e22'; 
+      emoji='🚨';
+      adviceText = '지금의 감정은 혼자 감당하기 어렵습니다. 전문 기관과 연결해 도움을 받아보세요.';
+      adviceColor = '#e67e22';
+      showGeneralWarning = true;
+    }
+    else{ 
+      catText='고위험(High Risk)'; 
+      color='#e74c3c'; 
+      emoji='🔴';
+      adviceText = '즉시 전문가의 도움이 필요한 상황입니다. 아래 연락처를 통해 지금 바로 연결하세요.';
+      adviceColor = '#e74c3c';
+      document.getElementById('emergencyHelp').classList.add('show');
+    }
+
+    const catDiv = document.getElementById('category');
+    catDiv.textContent = `${emoji} ${catText}`;
+    catDiv.style.backgroundColor = color;
+    
+    const adviceDiv = document.getElementById('adviceMessage');
+    adviceDiv.textContent = adviceText;
+    adviceDiv.style.borderLeftColor = adviceColor;
+    
+    if (showGeneralWarning) {
+      document.getElementById('generalWarning').style.display = 'block';
+    }
+    
+    document.getElementById('resultContainer').classList.add('show');
+    document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // 초기 표시 업데이트
+  sleepSlider.oninput();
+</script>
+
+</body>
+</html>
