@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 새해 운세 및 풍등 날리기</title>
+  <style>
+    :root{
+      --bg: #f6f6f6;
+      --panel: #ffffff;
+      --text: #111111;
+      --muted: #555555;
+      --border: #d9d9d9;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --shadow2: 0 14px 40px rgba(0,0,0,0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 32px 18px 60px;
+      position: relative;
+    }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 26px; }
+    .title { font-size: 42px; font-weight: 900; letter-spacing: -0.02em; margin: 0 0 10px; }
+    .subtitle { font-size: 22px; font-weight: 800; margin: 0 0 8px; }
+    .desc { margin: 0; color: var(--muted); font-size: 16px; }
+
+    .horse {
+      margin-top: 12px;
+      font-size: 64px;
+      display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin: 18px 0;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .label { font-weight: 800; margin-bottom: 8px; display: block; }
+
+    input, textarea {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 12px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+    input:focus, textarea:focus { border-color: #999; }
+    textarea { resize: none; }
+
+    .btn {
+      width: 100%;
+      border: 2px solid #111;
+      background: #111;
+      color: #fff;
+      font-weight: 900;
+      padding: 14px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn.secondary {
+      background: #fff;
+      color: #111;
+      border-color: #111;
+    }
+    .btn.secondary:hover { background: #f0f0f0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .result { animation: fadeIn 200ms ease-out both; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .item {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .item .head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      font-weight: 900;
+    }
+    .item .head .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      border: 2px solid #111;
+      font-size: 14px;
+    }
+    .item p { margin: 0; color: #222; line-height: 1.45; }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 18px;
+      font-weight: 700;
+    }
+
+    /* Small helpers */
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+    .hint { color: var(--muted); margin-top: 8px; font-size: 13px; }
+
+    @media (min-width: 780px){
+      .grid { grid-template-columns: 1fr 1fr; }
+      .title { font-size: 52px; }
+      .subtitle { font-size: 26px; }
+    }
+
+    /* =========================
+       Lantern (Pastel + detail)
+       ========================= */
+
+    .lantern {
+      position: fixed;
+      bottom: -18px;
+      z-index: 50;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .lantern.igniting { animation: igniteHold 1.15s ease-out forwards; }
+    @keyframes igniteHold {
+      0%   { transform: translateY(0) scale(0.98); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translateY(-8px) scale(1); opacity: 1; }
+    }
+
+    .lantern.flying { animation: flyUp 6s ease-in forwards; }
+    @keyframes flyUp {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg) scale(1); opacity: 1; }
+      20%  { transform: translateY(-18vh) translateX(8px) rotate(-0.6deg) scale(0.99); }
+      40%  { transform: translateY(-40vh) translateX(-10px) rotate(0.9deg) scale(0.98); }
+      70%  { transform: translateY(-75vh) translateX(12px) rotate(-0.8deg) scale(0.95); opacity: 0.92; }
+      100% { transform: translateY(-120vh) translateX(-6px) rotate(0.6deg) scale(0.90); opacity: 0; }
+    }
+
+    .lantern .box {
+      width: 250px;
+      max-width: 260px;
+      background: var(--lanternBody, #fff);
+      border: 2px solid rgba(0,0,0,0.35);
+      border-radius: 16px;
+      box-shadow: var(--shadow2);
+      padding: 14px 14px 10px;
+      position: relative;
+      overflow: hidden;
+      transform-origin: bottom center;
+      animation: paperSway 1.8s ease-in-out infinite;
+    }
+    @keyframes paperSway {
+      0%, 100% { transform: rotate(0deg); }
+      50%      { transform: rotate(0.6deg); }
+    }
+
+    .lantern .box::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.55), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(0,0,0,0.06), transparent 55%);
+      pointer-events:none;
+    }
+
+    .lantern .text {
+      font-weight: 900;
+      white-space: pre-wrap;
+      word-break: break-word;
+      text-align: center;
+      line-height: 1.3;
+      position: relative;
+      z-index: 2;
+      color: rgba(0,0,0,0.82);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    }
+
+    .lantern .frame {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    .lantern .frame .bar {
+      width: 78%;
+      height: 10px;
+      border: 2px solid rgba(0,0,0,0.35);
+      border-radius: 999px;
+      opacity: 0.35;
+      background: rgba(255,255,255,0.20);
+    }
+
+    .lantern .candleArea{
+      margin-top: 10px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .lantern .candle {
+      width: 28px;
+      height: 18px;
+      border: 2px solid rgba(0,0,0,0.35);
+      border-radius: 8px;
+      opacity: 0.5;
+      position: relative;
+      background: rgba(255,255,255,0.22);
+    }
+
+    .lantern .flame {
+      position: absolute;
+      top: -20px;
+      width: 18px;
+      height: 24px;
+      opacity: 0;
+      transform: translateY(4px) scale(0.8);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      filter: blur(0.2px);
+    }
+
+    .lantern .flame::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius: 999px;
+      transform: rotate(45deg);
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,235,180,0.9) 45%, rgba(255,170,60,0.85) 70%, rgba(255,120,20,0.7) 100%);
+      box-shadow:
+        0 0 10px rgba(255,170,60,0.65),
+        0 0 20px rgba(255,120,20,0.35);
+    }
+
+    .lantern.lit .flame{
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      animation: flameFlicker 0.12s infinite alternate;
+    }
+    @keyframes flameFlicker{
+      from { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.92; }
+      to   { transform: translateY(-1px) scale(1.04) rotate(1deg); opacity: 1; }
+    }
+
+    .lantern .glow {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 240px;
+      height: 180px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: radial-gradient(circle at 50% 85%, rgba(255,200,120,0.45), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .lantern.lit .glow { opacity: 1; }
+
+    .lantern .status {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: rgba(0,0,0,0.45);
+      letter-spacing: -0.01em;
+      position: relative;
+      z-index: 2;
+    }
+    .lantern.lit .status { display: none; }
+
+    .lantern[data-color="pink"]   { --lanternBody: #ffd6e7; }
+    .lantern[data-color="peach"]  { --lanternBody: #ffe0cc; }
+    .lantern[data-color="lemon"]  { --lanternBody: #fff2b8; }
+    .lantern[data-color="mint"]   { --lanternBody: #c8f5e4; }
+    .lantern[data-color="sky"]    { --lanternBody: #cfe6ff; }
+    .lantern[data-color="lilac"]  { --lanternBody: #e6d7ff; }
+
+    .palette { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .chip {
+      width: 38px; height: 38px; border-radius: 999px;
+      border: 2px solid rgba(0,0,0,0.25);
+      cursor: pointer; position: relative;
+      background: var(--chipColor);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+      transition: transform 0.12s ease;
+    }
+    .chip:hover { transform: translateY(-1px); }
+    .chip[aria-pressed="true"] { outline: 3px solid rgba(0,0,0,0.65); outline-offset: 2px; }
+    .chip::after{
+      content:""; position:absolute; inset:0; border-radius: 999px;
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.65), transparent 55%);
+      pointer-events:none;
+    }
+
+    .paletteRow { width: 240px; min-width: 220px; }
+    .paletteTitle { font-weight: 800; margin-bottom: 8px; display: block; }
+    .paletteHint { color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.25; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <h1 class="title">새해 복 많이 받으세요 🐴</h1>
+    </div>
+
+    <!-- Fortune Form -->
+    <section class="card">
+      <h3>
+        <span class="tag" aria-hidden="true">✦</span>
+        2026년 운세(신년 운세)
+      </h3>
+
+      <div class="row">
+        <div style="flex:1; min-width: 220px;">
+          <label class="label" for="name">이름</label>
+          <input id="name" type="text" placeholder="이름을 입력하세요" />
+        </div>
+
+        <!-- CHANGED: 생년월일 입력 -->
+        <div style="flex:1; min-width: 220px;">
+          <label class="label" for="birthDate">생년월일</label>
+          <input id="birthDate" type="date" />
+          <div class="hint">생년월일을 기반으로 운세가 고정 생성됩니다.</div>
+        </div>
+      </div>
+
+      <button class="btn" id="btnFortune">운세 확인하기</button>
+    </section>
+
+    <!-- Result -->
+    <section class="card result" id="resultCard" style="display:none;">
+      <h3 id="resultTitle">운세 결과</h3>
+
+      <div class="grid">
+  <div class="item">
+    <div class="head">애정운</div>
+    <p id="loveText"></p>
+  </div>
+
+  <div class="item">
+    <div class="head">재물운</div>
+    <p id="wealthText"></p>
+  </div>
+
+  <div class="item">
+    <div class="head">건강운</div>
+    <p id="healthText"></p>
+  </div>
+
+  <div class="item">
+    <div class="head">사업운</div>
+    <p id="careerText"></p>
+  </div>
+
+  <div class="item">
+    <div class="head">학업운</div>
+    <p id="studyText"></p>
+  </div>
+</div>
+
+      <button class="btn secondary" id="btnReset">입력 다시하기</button>
+    </section>
+
+    <!-- Wish Lantern -->
+    <section class="card">
+      <h3>🏮 2026년 나의 소망(다짐)</h3>
+      <p class="desc" style="margin:0 0 10px;">소망을 적고, 풍등 색을 고른 뒤 날려보세요.</p>
+
+      <div class="row">
+        <div style="flex: 1; min-width: 220px;">
+          <label class="label" for="wish">소망/다짐</label>
+          <textarea id="wish" rows="4" placeholder="2026년에 이루고 싶은 소망이나 다짐을 적어주세요."></textarea>
+        </div>
+
+        <div class="paletteRow">
+          <span class="paletteTitle">풍등 색상</span>
+          <div class="palette" id="palette" role="group" aria-label="풍등 색상 선택">
+            <button class="chip" type="button" data-color="pink"  aria-pressed="true"  style="--chipColor:#ffd6e7" title="핑크"></button>
+            <button class="chip" type="button" data-color="peach" aria-pressed="false" style="--chipColor:#ffe0cc" title="피치"></button>
+            <button class="chip" type="button" data-color="lemon" aria-pressed="false" style="--chipColor:#fff2b8" title="레몬"></button>
+            <button class="chip" type="button" data-color="mint"  aria-pressed="false" style="--chipColor:#c8f5e4" title="민트"></button>
+            <button class="chip" type="button" data-color="sky"   aria-pressed="false" style="--chipColor:#cfe6ff" title="하늘"></button>
+            <button class="chip" type="button" data-color="lilac" aria-pressed="false" style="--chipColor:#e6d7ff" title="라일락"></button>
+          </div>
+          <div class="paletteHint">원하는 풍등 색상을 클릭한 뒤 ‘풍등 날리기’를 누르세요.</div>
+        </div>
+      </div>
+
+      <button class="btn" id="btnLantern">풍등 날리기</button>
+    </section>
+
+    <div class="footer">
+      2026년의 꿈이 빛을 따라 높이 떠오르고, 하루하루가 소중한 기억으로 채워지길 바랍니다. -제작자 올림-
+    </div>
+  </div>
+
+  <script>
+    // ====== Data ======
+    const zodiacSigns = ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지'];
+
+    const fortunes = {
+      love: ['사랑이 활짝 피어나는 한 해', '소중한 인연을 만나는 해', '관계가 더욱 돈독해지는 시기', '따뜻한 마음이 전해지는 해'],
+      wealth: ['재물운이 상승하는 해', '노력한 만큼 결실을 보는 시기', '기회가 찾아오는 해', '안정적인 재정 운영의 해'],
+      health: ['건강에 활력이 넘치는 해', '규칙적인 생활로 건강 증진', '심신의 균형을 찾는 시기', '에너지가 충만한 한 해'],
+      career: ['발전의 기회가 오는 해', '새로운 도전이 성과로 이어지는 해', '실력을 인정받는 시기', '목표 달성의 한 해'],
+      study: ['새로운 분야에 도전하는 해', '꾸준한 노력으로 결실을 맺는 해', '합격률이 높은 해', '시간 관리가 중요한 해']
+    };
+
+    // 생년월일의 "연도"로 띠 계산은 그대로 가능
+    function getZodiac(year) {
+      const baseYear = 1900;
+      const index = (year - baseYear) % 12;
+      return zodiacSigns[(index + 12) % 12];
+    }
+
+    // =========================
+    // Seeded RNG (고정 운세)
+    // =========================
+    // 문자열을 32-bit 정수 해시로
+    function hashString(str) {
+      let h = 2166136261; // FNV-1a base
+      for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    }
+
+    // 32-bit seed -> [0,1) 난수 생성기
+    function mulberry32(seed) {
+      return function() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function pickRandomSeeded(arr, rng) {
+      return arr[Math.floor(rng() * arr.length)];
+    }
+
+    // ====== Elements ======
+    const elName = document.getElementById('name');
+    const elBirthDate = document.getElementById('birthDate');
+    const btnFortune = document.getElementById('btnFortune');
+
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.getElementById('resultTitle');
+
+    const loveText = document.getElementById('loveText');
+    const wealthText = document.getElementById('wealthText');
+    const healthText = document.getElementById('healthText');
+    const careerText = document.getElementById('careerText');
+    const studyText = document.getElementById('studyText');
+
+    const btnReset = document.getElementById('btnReset');
+
+    const elWish = document.getElementById('wish');
+    const btnLantern = document.getElementById('btnLantern');
+
+    // Palette
+    const palette = document.getElementById('palette');
+    let selectedLanternColor = 'pink'; // default
+
+    // ====== Fortune Logic (생년월일 기반) ======
+    btnFortune.addEventListener('click', () => {
+      const name = elName.value.trim();
+      const birthDate = elBirthDate.value; // YYYY-MM-DD
+
+      if (!name || !birthDate) {
+        alert('이름과 생년월일을 입력하세요.');
+        return;
+      }
+
+      // birthDate 유효성 체크
+      const dt = new Date(birthDate + "T00:00:00");
+      if (Number.isNaN(dt.getTime())) {
+        alert('생년월일을 올바르게 입력하세요.');
+        return;
+      }
+
+      const birthYear = dt.getFullYear();
+      if (birthYear < 1900 || birthYear > 2026) {
+        alert('생년월일의 연도를 확인하세요. (1900~2026)');
+        return;
+      }
+
+      const zodiac = getZodiac(birthYear);
+
+      // 이름 + 생년월일로 고정 시드 생성
+      const seed = hashString(`${name}|${birthDate}|2026`);
+      const rng = mulberry32(seed);
+
+      const fortune = {
+        love: pickRandomSeeded(fortunes.love, rng),
+        wealth: pickRandomSeeded(fortunes.wealth, rng),
+        health: pickRandomSeeded(fortunes.health, rng),
+        career: pickRandomSeeded(fortunes.career, rng),
+        study: pickRandomSeeded(fortunes.study, rng),
+      };
+
+      resultTitle.textContent = `${name}님의 운세 (${zodiac}띠)`;
+      loveText.textContent = fortune.love;
+      wealthText.textContent = fortune.wealth;
+      healthText.textContent = fortune.health;
+      careerText.textContent = fortune.career;
+      studyText.textContent = fortune.study;
+
+      resultCard.style.display = 'block';
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    btnReset.addEventListener('click', () => {
+      resultCard.style.display = 'none';
+      elName.focus();
+    });
+
+    // ====== Palette Logic ======
+    palette.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+
+      selectedLanternColor = chip.dataset.color;
+
+      [...palette.querySelectorAll('.chip')].forEach(btn => {
+        btn.setAttribute('aria-pressed', btn === chip ? 'true' : 'false');
+      });
+    });
+
+    // =========================
+    // Lantern: ignite -> fly
+    // =========================
+    let lanternCooldown = false;
+
+    btnLantern.addEventListener('click', () => {
+      const wish = elWish.value.trim();
+      if (!wish) return;
+
+      if (lanternCooldown) return;
+      lanternCooldown = true;
+      setTimeout(() => (lanternCooldown = false), 220);
+
+      const lantern = document.createElement('div');
+      lantern.className = 'lantern igniting';
+      lantern.dataset.color = selectedLanternColor;
+
+      lantern.style.left = (Math.random() * 78 + 11) + '%';
+
+      lantern.innerHTML = `
+        <div class="box">
+          <div class="glow" aria-hidden="true"></div>
+          <div class="text"></div>
+          <div class="frame" aria-hidden="true"><div class="bar"></div></div>
+          <div class="candleArea" aria-hidden="true">
+            <div class="candle">
+              <div class="flame"></div>
+            </div>
+          </div>
+          <div class="status">점화 중…</div>
+        </div>
+      `;
+
+      lantern.querySelector('.text').textContent = wish;
+      document.body.appendChild(lantern);
+      elWish.value = '';
+
+      setTimeout(() => lantern.classList.add('lit'), 500);
+      setTimeout(() => {
+        lantern.classList.remove('igniting');
+        lantern.classList.add('flying');
+      }, 1150);
+
+      setTimeout(() => lantern.remove(), 7600);
+    });
+
+    // Ctrl+Enter로 풍등 날리기
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.activeElement === elWish) {
+        btnLantern.click();
+      }
+    });
+  </script>
+</body>
+</html>
